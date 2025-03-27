@@ -4,9 +4,9 @@ export default function Header() {
   return (
     <header id="main-header">
       <h1 id="title">
-        Food Order App 💪 <img src={Image} />
+        Food Order App 💪 <img src={Image} alt="Food order logo" />
       </h1>
-      <button>Hello</button>
+      <button className="button">Cart</button>
     </header>
   );
 }
