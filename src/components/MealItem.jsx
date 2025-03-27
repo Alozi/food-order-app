@@ -1,20 +1,21 @@
-import Image from "../assets/logo.jpg";
+export default function MealItem({ id, img, title, price, description }) {
+  function handleButton() {
+    console.log("button click");
+  }
 
-export default function MealItem() {
   return (
-    <div className="meal-item">
+    <div className="meal-item" id={id}>
       <article>
-        <img src={Image} alt="Food order logo" />
-        <h3>Mac & Cheese</h3>
+        <img src={img} alt={title} />
+        <h3>{title}</h3>
         <div>
-          <span className="meal-item-price">$8.99</span>
+          <span className="meal-item-price">${price}</span>
         </div>
-        <p className="meal-item-description">Test text...</p>
+        <p className="meal-item-description">{description}</p>
         <div className="meal-item-actions">
-          <button className="button">Add to Cart</button>
+          <button className="button" onClick={handleButton}>Add to Cart</button>
         </div>
       </article>
-      test
     </div>
   );
 }
