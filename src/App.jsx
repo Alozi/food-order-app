@@ -56,6 +56,32 @@ function App() {
     }
   }
 
+  function increaseQuantity(title) {
+    setCartData((prevState) => {
+      return prevState.map((item) =>
+        item.title === title ? { ...item, quantity: item.quantity + 1 } : item
+      );
+    });
+  }
+
+  function decreaseQuantity(title) {
+    setCartData((prevState) => {
+      return prevState
+        .map((item) => {
+          if (item.title === title) {
+            if (item.quantity > 1) {
+              return { ...item, quantity: item.quantity - 1 };
+            } else {
+              return null;
+            }
+          } else {
+            return item;
+          }
+        })
+        .filter((item) => item !== null);
+    });
+  }
+
   return (
     <>
       <Header cartLength={cartData.length} openCartModal={openModal} />
@@ -66,6 +92,8 @@ function App() {
         closeCartModal={closeModal}
         handleOutsideClick={handleOutsideClick}
         total={totalPrice}
+        onIncreaseQuantity={increaseQuantity}
+        onDecreaseQuantity={decreaseQuantity}
       />
     </>
   );
