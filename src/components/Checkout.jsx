@@ -73,7 +73,7 @@ export default function Checkout({
           label="Full Name"
           value={dataForm.fullname}
           onChange={(e) => handleForm("fullname", e.target.value)}
-          error={!isNotEmpty(dataForm.fullname) && didEdit.fullname && "Please enter a full name."}
+          error={!isNotEmpty(dataForm.fullname) && "Please enter a full name."}
         />
         <Input
           id="email"
