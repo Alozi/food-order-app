@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import MealItem from "./MealItem";
 
-export default function Container() {
+export default function Container({ onMealButtonClick }) {
   const [mealsItemsData, setMealsItemsData] = useState([]);
 
   useEffect(() => {
@@ -23,7 +23,15 @@ export default function Container() {
       {mealsItemsData.map((item) => {
         const imgSrc = `http://localhost:3000/${item.image}`;
         return (
-          <MealItem key={item.id} id={item.id} img={imgSrc} title={item.name} price={item.price} description={item.description} />
+          <MealItem
+            key={item.id}
+            id={item.id}
+            img={imgSrc}
+            title={item.name}
+            price={item.price}
+            description={item.description}
+            onButtonClick={onMealButtonClick}
+          />
         );
       })}
     </main>

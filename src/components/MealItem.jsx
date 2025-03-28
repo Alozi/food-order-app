@@ -1,7 +1,4 @@
-export default function MealItem({ id, img, title, price, description }) {
-  function handleButton() {
-    console.log("button click");
-  }
+export default function MealItem({ id, img, title, price, description, onButtonClick }) {
 
   return (
     <div className="meal-item" id={id}>
@@ -13,7 +10,7 @@ export default function MealItem({ id, img, title, price, description }) {
         </div>
         <p className="meal-item-description">{description}</p>
         <div className="meal-item-actions">
-          <button className="button" onClick={handleButton}>Add to Cart</button>
+          <button className="button" onClick={() => onButtonClick(id, title, price)}>Add to Cart</button>
         </div>
       </article>
     </div>
