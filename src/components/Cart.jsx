@@ -2,7 +2,7 @@ import { createPortal } from "react-dom";
 
 import Modal from "./Modal.jsx";
 
-export default function Cart({ data, modalRef, closeCartModal, handleOutsideClick }) {
+export default function Cart({ data, modalRef, closeCartModal, handleOutsideClick, total }) {
   return createPortal(
     <Modal title="Your Cart" buttonLabel="Go to Checkout" modalRef={modalRef} closeCartModal={closeCartModal} handleOutsideClick={handleOutsideClick}>
       <div className="cart">
@@ -19,7 +19,7 @@ export default function Cart({ data, modalRef, closeCartModal, handleOutsideClic
           </ul>
         )}
 
-        <div className="cart-total">$1000</div>
+        <div className="cart-total">${total}</div>
       </div>
     </Modal>,
     document.getElementById("modal")
