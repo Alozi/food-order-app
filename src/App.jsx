@@ -59,7 +59,6 @@ function App() {
   }
 
   function openModalCheckout() {
-    console.log('openModalCheckout');
     closeModalCart();
     modalCheckoutRef.current.showModal();
   }
@@ -104,7 +103,6 @@ function App() {
     <>
       <Header cartLength={cartData.length} openCartModal={openModalCart} />
       <Container onMealButtonClick={handleMealButton} />
-
       <Cart
         data={cartData}
         modalRef={modalCartRef}
@@ -115,7 +113,6 @@ function App() {
         onDecreaseQuantity={decreaseQuantity}
         openCheckoutModal={openModalCheckout}
       />
-
       <Checkout
         total={totalPrice}
         modalRef={modalCheckoutRef}

@@ -1,6 +1,6 @@
 import { createPortal } from "react-dom";
 
-import Modal from "./Modal.jsx";
+import Modal from "./common/Modal.jsx";
 
 export default function Cart({
   data,
@@ -10,7 +10,7 @@ export default function Cart({
   total,
   onIncreaseQuantity,
   onDecreaseQuantity,
-  openCheckoutModal
+  openCheckoutModal,
 }) {
   return createPortal(
     <Modal
@@ -19,7 +19,7 @@ export default function Cart({
       modalRef={modalRef}
       closeModal={closeModal}
       handleOutsideClick={handleOutsideClick}
-      nextStepButton={openCheckoutModal}
+      nextStepButton={total == 0 ? null : openCheckoutModal}
     >
       <div className="cart">
         {data.length == 0 && <p>Your cart is empty.</p>}

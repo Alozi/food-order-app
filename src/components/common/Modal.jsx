@@ -5,7 +5,7 @@ export default function Modal({
   modalRef,
   closeModal,
   handleOutsideClick,
-  nextStepButton
+  nextStepButton,
 }) {
   return (
     <dialog className="modal" ref={modalRef} onClick={handleOutsideClick}>
@@ -15,7 +15,9 @@ export default function Modal({
         <button className="text-button" onClick={closeModal}>
           Close
         </button>
-        <button className="button" onClick={nextStepButton}>{buttonLabel}</button>
+        <button className="button" onClick={nextStepButton} disabled={nextStepButton == null ? true : false}>
+          {buttonLabel}
+        </button>
       </div>
     </dialog>
   );
