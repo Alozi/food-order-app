@@ -3,18 +3,19 @@ export default function Modal({
   children,
   buttonLabel,
   modalRef,
-  closeCartModal,
+  closeModal,
   handleOutsideClick,
+  nextStepButton
 }) {
   return (
     <dialog className="modal" ref={modalRef} onClick={handleOutsideClick}>
       <h2>{title}</h2>
       {children}
       <div className="modal-actions">
-        <button className="text-button" onClick={closeCartModal}>
+        <button className="text-button" onClick={closeModal}>
           Close
         </button>
-        <button className="button">{buttonLabel}</button>
+        <button className="button" onClick={nextStepButton}>{buttonLabel}</button>
       </div>
     </dialog>
   );

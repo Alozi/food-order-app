@@ -3,10 +3,12 @@ import { useState, useRef, useMemo } from "react";
 import Header from "./components/Header";
 import Container from "./components/Container";
 import Cart from "./components/Cart";
+import Checkout from "./components/Checkout";
 
 function App() {
   const [cartData, setCartData] = useState([]);
-  const modalRef = useRef(null);
+  const modalCartRef = useRef(null);
+  const modalCheckoutRef = useRef(null);
 
   const totalPrice = useMemo(
     () =>
@@ -42,17 +44,33 @@ function App() {
     }
   }
 
-  function openModal() {
-    modalRef.current.showModal();
+  function openModalCart() {
+    modalCartRef.current.showModal();
   }
 
-  function closeModal() {
-    modalRef.current.close();
+  function closeModalCart() {
+    modalCartRef.current.close();
   }
 
-  function handleOutsideClick(e) {
-    if (e.target === modalRef.current) {
-      closeModal();
+  function handleOutsideClickCart(e) {
+    if (e.target === modalCartRef.current) {
+      closeModalCart();
+    }
+  }
+
+  function openModalCheckout() {
+    console.log('openModalCheckout');
+    closeModalCart();
+    modalCheckoutRef.current.showModal();
+  }
+
+  function closeModalCheckout() {
+    modalCheckoutRef.current.close();
+  }
+
+  function handleOutsideClickCheckout(e) {
+    if (e.target === modalCheckoutRef.current) {
+      closeModalCheckout();
     }
   }
 
@@ -84,16 +102,25 @@ function App() {
 
   return (
     <>
-      <Header cartLength={cartData.length} openCartModal={openModal} />
+      <Header cartLength={cartData.length} openCartModal={openModalCart} />
       <Container onMealButtonClick={handleMealButton} />
+
       <Cart
         data={cartData}
-        modalRef={modalRef}
-        closeCartModal={closeModal}
-        handleOutsideClick={handleOutsideClick}
+        modalRef={modalCartRef}
+        closeModal={closeModalCart}
+        handleOutsideClick={handleOutsideClickCart}
         total={totalPrice}
         onIncreaseQuantity={increaseQuantity}
         onDecreaseQuantity={decreaseQuantity}
+        openCheckoutModal={openModalCheckout}
+      />
+
+      <Checkout
+        total={totalPrice}
+        modalRef={modalCheckoutRef}
+        closeModal={closeModalCheckout}
+        handleOutsideClick={handleOutsideClickCheckout}
       />
     </>
   );

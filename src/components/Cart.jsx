@@ -5,19 +5,21 @@ import Modal from "./Modal.jsx";
 export default function Cart({
   data,
   modalRef,
-  closeCartModal,
+  closeModal,
   handleOutsideClick,
   total,
   onIncreaseQuantity,
   onDecreaseQuantity,
+  openCheckoutModal
 }) {
   return createPortal(
     <Modal
       title="Your Cart"
       buttonLabel="Go to Checkout"
       modalRef={modalRef}
-      closeCartModal={closeCartModal}
+      closeModal={closeModal}
       handleOutsideClick={handleOutsideClick}
+      nextStepButton={openCheckoutModal}
     >
       <div className="cart">
         {data.length == 0 && <p>Your cart is empty.</p>}
