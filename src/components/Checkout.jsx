@@ -1,16 +1,10 @@
 import { createPortal } from "react-dom";
+import { useState } from "react";
 
 import Modal from "./common/Modal.jsx";
 import Input from "./common/Input.jsx";
-import { useState } from "react";
 
-export function isNotEmpty(value) {
-  return value.trim() !== "";
-}
-
-export function isEmail(value) {
-  return value.includes("@");
-}
+import { isNotEmpty, isEmail } from "../util/validation.js";
 
 export default function Checkout({
   modalRef,
@@ -25,13 +19,14 @@ export default function Checkout({
     code: "",
     city: "",
   });
-  // const [didEdit, setDidEdit] = useState({
-  //   fullname: false,
-  //   email: false,
-  //   street: false,
-  //   code: false,
-  //   city: false,
-  // });
+
+  const [didEdit, setDidEdit] = useState({
+    fullname: false,
+    email: false,
+    street: false,
+    code: false,
+    city: false,
+  });
 
   function handleForm(name, value) {
     setaDataForm((prevState) => {
@@ -55,6 +50,15 @@ export default function Checkout({
     }
   }
 
+  function handleInputBlur(name) {
+    setDidEdit((prevState) => {
+      return {
+        ...prevState,
+        [name]: true,
+      };
+    });
+  }
+
   return createPortal(
     <Modal
       title="Checkout"
@@ -73,7 +77,12 @@ export default function Checkout({
           label="Full Name"
           value={dataForm.fullname}
           onChange={(e) => handleForm("fullname", e.target.value)}
-          error={!isNotEmpty(dataForm.fullname) && "Please enter a full name."}
+          onBlur={() => handleInputBlur("fullname")}
+          error={
+            !isNotEmpty(dataForm.fullname) &&
+            didEdit.fullname &&
+            "Please enter a full name."
+          }
         />
         <Input
           id="email"
@@ -81,10 +90,12 @@ export default function Checkout({
           type="email"
           label="E-Mail Address"
           value={dataForm.email}
+          onBlur={() => handleInputBlur("email")}
           onChange={(e) => handleForm("email", e.target.value)}
           error={
-            !isNotEmpty(dataForm.email) &&
+            // !isNotEmpty(dataForm.email) &&
             !isEmail(dataForm.email) &&
+            didEdit.email &&
             "Please enter a valid email address."
           }
         />
@@ -94,8 +105,13 @@ export default function Checkout({
           type="text"
           label="Street"
           value={dataForm.street}
+          onBlur={() => handleInputBlur("street")}
           onChange={(e) => handleForm("street", e.target.value)}
-          error={!isNotEmpty(dataForm.street) && "Please enter a street."}
+          error={
+            !isNotEmpty(dataForm.street) &&
+            didEdit.street &&
+            "Please enter a street."
+          }
         />
         <div className="control-row">
           <Input
@@ -104,8 +120,13 @@ export default function Checkout({
             type="number"
             label="Postal Code"
             value={dataForm.code}
+            onBlur={() => handleInputBlur("code")}
             onChange={(e) => handleForm("code", e.target.value)}
-            error={!isNotEmpty(dataForm.code) && "Please enter a code."}
+            error={
+              !isNotEmpty(dataForm.code) &&
+              didEdit.code &&
+              "Please enter a code."
+            }
           />
           <Input
             id="city"
@@ -113,8 +134,13 @@ export default function Checkout({
             type="text"
             label="City"
             value={dataForm.city}
+            onBlur={() => handleInputBlur("city")}
             onChange={(e) => handleForm("city", e.target.value)}
-            error={!isNotEmpty(dataForm.city) && "Please enter a city."}
+            error={
+              !isNotEmpty(dataForm.city) &&
+              didEdit.city &&
+              "Please enter a city."
+            }
           />
         </div>
       </form>
