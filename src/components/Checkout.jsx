@@ -28,6 +28,14 @@ export default function Checkout({
     city: false,
   });
 
+  const [errors, setErrors] = useState({
+    fullname: false,
+    email: false,
+    street: false,
+    code: false,
+    city: false,
+  });
+
   function handleForm(name, value) {
     setaDataForm((prevState) => {
       return {
@@ -35,12 +43,58 @@ export default function Checkout({
         [name]: value,
       };
     });
+
+    return;
   }
 
   function submitOrder() {
+    if (!isNotEmpty(dataForm.fullname)) {
+      setErrors((prevState) => {
+        return {
+          ...prevState,
+          fullname: true,
+        };
+      });
+    }
+
+    if (!isEmail(dataForm.email)) {
+      setErrors((prevState) => {
+        return {
+          ...prevState,
+          email: true,
+        };
+      });
+    }
+
+    if (!isNotEmpty(dataForm.street)) {
+      setErrors((prevState) => {
+        return {
+          ...prevState,
+          street: true,
+        };
+      });
+    }
+
+    if (!isNotEmpty(dataForm.code)) {
+      setErrors((prevState) => {
+        return {
+          ...prevState,
+          code: true,
+        };
+      });
+    }
+
+    if (!isNotEmpty(dataForm.city)) {
+      setErrors((prevState) => {
+        return {
+          ...prevState,
+          city: true,
+        };
+      });
+    }
+
     if (
       isNotEmpty(dataForm.fullname) &&
-      isNotEmpty(dataForm.email) &&
       isEmail(dataForm.email) &&
       isNotEmpty(dataForm.street) &&
       isNotEmpty(dataForm.code) &&
@@ -79,8 +133,8 @@ export default function Checkout({
           onChange={(e) => handleForm("fullname", e.target.value)}
           onBlur={() => handleInputBlur("fullname")}
           error={
+            (errors.fullname || didEdit.fullname) &&
             !isNotEmpty(dataForm.fullname) &&
-            didEdit.fullname &&
             "Please enter a full name."
           }
         />
@@ -94,8 +148,8 @@ export default function Checkout({
           onChange={(e) => handleForm("email", e.target.value)}
           error={
             // !isNotEmpty(dataForm.email) &&
+            (errors.email || didEdit.email) &&
             !isEmail(dataForm.email) &&
-            didEdit.email &&
             "Please enter a valid email address."
           }
         />
@@ -108,8 +162,8 @@ export default function Checkout({
           onBlur={() => handleInputBlur("street")}
           onChange={(e) => handleForm("street", e.target.value)}
           error={
+            (errors.street || didEdit.street) &&
             !isNotEmpty(dataForm.street) &&
-            didEdit.street &&
             "Please enter a street."
           }
         />
@@ -123,8 +177,8 @@ export default function Checkout({
             onBlur={() => handleInputBlur("code")}
             onChange={(e) => handleForm("code", e.target.value)}
             error={
+              (errors.code || didEdit.code) &&
               !isNotEmpty(dataForm.code) &&
-              didEdit.code &&
               "Please enter a code."
             }
           />
@@ -137,8 +191,8 @@ export default function Checkout({
             onBlur={() => handleInputBlur("city")}
             onChange={(e) => handleForm("city", e.target.value)}
             error={
+              (errors.city || didEdit.city) &&
               !isNotEmpty(dataForm.city) &&
-              didEdit.city &&
               "Please enter a city."
             }
           />
