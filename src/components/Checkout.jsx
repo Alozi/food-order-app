@@ -6,33 +6,62 @@ import Input from "./common/Input.jsx";
 
 import { isNotEmpty, isEmail } from "../util/validation.js";
 
+async function fetchOrders(orderData) {
+  try {
+    const response = await fetch("http://localhost:3000/orders", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ order: orderData }),
+
+    });
+
+    console.log('response');
+    console.log(response);
+
+    const resData = await response.json();
+    console.log('resData');
+    console.log(resData);
+
+    return resData;
+     
+  } catch (error) {
+    console.error(error);
+  }
+}
+
 export default function Checkout({
+  items,
   modalRef,
   closeModal,
   handleOutsideClick,
   total,
 }) {
   const [dataForm, setaDataForm] = useState({
-    fullname: "",
-    email: "",
-    street: "",
-    code: "",
-    city: "",
+    items: { ...items },
+    customer: {
+      name: "",
+      email: "",
+      street: "",
+      ["postal-code"]: "",
+      city: "",
+    },
   });
 
   const [didEdit, setDidEdit] = useState({
-    fullname: false,
+    name: false,
     email: false,
     street: false,
-    code: false,
+    ["postal-code"]: false,
     city: false,
   });
 
   const [errors, setErrors] = useState({
-    fullname: false,
+    name: false,
     email: false,
     street: false,
-    code: false,
+    ["postal-code"]: false,
     city: false,
   });
 
@@ -40,7 +69,10 @@ export default function Checkout({
     setaDataForm((prevState) => {
       return {
         ...prevState,
-        [name]: value,
+        customer: {
+          ...prevState.customer,
+          [name]: value,
+        },
       };
     });
 
@@ -48,16 +80,16 @@ export default function Checkout({
   }
 
   function submitOrder() {
-    if (!isNotEmpty(dataForm.fullname)) {
+    if (!isNotEmpty(dataForm.customer.name)) {
       setErrors((prevState) => {
         return {
           ...prevState,
-          fullname: true,
+          name: true,
         };
       });
     }
 
-    if (!isEmail(dataForm.email)) {
+    if (!isEmail(dataForm.customer.email)) {
       setErrors((prevState) => {
         return {
           ...prevState,
@@ -66,7 +98,7 @@ export default function Checkout({
       });
     }
 
-    if (!isNotEmpty(dataForm.street)) {
+    if (!isNotEmpty(dataForm.customer.street)) {
       setErrors((prevState) => {
         return {
           ...prevState,
@@ -75,16 +107,16 @@ export default function Checkout({
       });
     }
 
-    if (!isNotEmpty(dataForm.code)) {
+    if (!isNotEmpty(dataForm.customer["postal-code"])) {
       setErrors((prevState) => {
         return {
           ...prevState,
-          code: true,
+          ["postal-code"]: true,
         };
       });
     }
 
-    if (!isNotEmpty(dataForm.city)) {
+    if (!isNotEmpty(dataForm.customer.city)) {
       setErrors((prevState) => {
         return {
           ...prevState,
@@ -94,13 +126,15 @@ export default function Checkout({
     }
 
     if (
-      isNotEmpty(dataForm.fullname) &&
-      isEmail(dataForm.email) &&
-      isNotEmpty(dataForm.street) &&
-      isNotEmpty(dataForm.code) &&
-      isNotEmpty(dataForm.city)
+      isNotEmpty(dataForm.customer.name) &&
+      isEmail(dataForm.customer.email) &&
+      isNotEmpty(dataForm.customer.street) &&
+      isNotEmpty(dataForm.customer["postal-code"]) &&
+      isNotEmpty(dataForm.customer.city)
     ) {
       console.log("submit order");
+
+      fetchOrders(dataForm);
     }
   }
 
@@ -125,16 +159,16 @@ export default function Checkout({
       <form>
         <div>Total Amount: ${total}</div>
         <Input
-          id="fullname"
-          name="fullname"
+          id="name"
+          name="name"
           type="text"
           label="Full Name"
-          value={dataForm.fullname}
-          onChange={(e) => handleForm("fullname", e.target.value)}
-          onBlur={() => handleInputBlur("fullname")}
+          value={dataForm.customer.name}
+          onChange={(e) => handleForm("name", e.target.value)}
+          onBlur={() => handleInputBlur("name")}
           error={
-            (errors.fullname || didEdit.fullname) &&
-            !isNotEmpty(dataForm.fullname) &&
+            (errors.name || didEdit.name) &&
+            !isNotEmpty(dataForm.customer.name) &&
             "Please enter a full name."
           }
         />
@@ -143,13 +177,13 @@ export default function Checkout({
           name="email"
           type="email"
           label="E-Mail Address"
-          value={dataForm.email}
+          value={dataForm.customer.email}
           onBlur={() => handleInputBlur("email")}
           onChange={(e) => handleForm("email", e.target.value)}
           error={
             // !isNotEmpty(dataForm.email) &&
             (errors.email || didEdit.email) &&
-            !isEmail(dataForm.email) &&
+            !isEmail(dataForm.customer.email) &&
             "Please enter a valid email address."
           }
         />
@@ -158,12 +192,12 @@ export default function Checkout({
           name="street"
           type="text"
           label="Street"
-          value={dataForm.street}
+          value={dataForm.customer.street}
           onBlur={() => handleInputBlur("street")}
           onChange={(e) => handleForm("street", e.target.value)}
           error={
             (errors.street || didEdit.street) &&
-            !isNotEmpty(dataForm.street) &&
+            !isNotEmpty(dataForm.customer.street) &&
             "Please enter a street."
           }
         />
@@ -173,12 +207,12 @@ export default function Checkout({
             name="code"
             type="number"
             label="Postal Code"
-            value={dataForm.code}
-            onBlur={() => handleInputBlur("code")}
-            onChange={(e) => handleForm("code", e.target.value)}
+            value={dataForm.customer["postal-code"]}
+            onBlur={() => handleInputBlur("postal-code")}
+            onChange={(e) => handleForm("postal-code", e.target.value)}
             error={
-              (errors.code || didEdit.code) &&
-              !isNotEmpty(dataForm.code) &&
+              (errors["postal-code"] || didEdit["postal-code"]) &&
+              !isNotEmpty(dataForm.customer["postal-code"]) &&
               "Please enter a code."
             }
           />
@@ -187,12 +221,12 @@ export default function Checkout({
             name="city"
             type="text"
             label="City"
-            value={dataForm.city}
+            value={dataForm.customer.city}
             onBlur={() => handleInputBlur("city")}
             onChange={(e) => handleForm("city", e.target.value)}
             error={
               (errors.city || didEdit.city) &&
-              !isNotEmpty(dataForm.city) &&
+              !isNotEmpty(dataForm.customer.city) &&
               "Please enter a city."
             }
           />

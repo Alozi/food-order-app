@@ -114,6 +114,7 @@ function App() {
         openCheckoutModal={openModalCheckout}
       />
       <Checkout
+        items={cartData}
         total={totalPrice}
         modalRef={modalCheckoutRef}
         closeModal={closeModalCheckout}
