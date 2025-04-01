@@ -5,31 +5,7 @@ import Modal from "./common/Modal.jsx";
 import Input from "./common/Input.jsx";
 
 import { isNotEmpty, isEmail } from "../util/validation.js";
-
-async function fetchOrders(orderData) {
-  try {
-    const response = await fetch("http://localhost:3000/orders", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ order: orderData }),
-
-    });
-
-    console.log('response');
-    console.log(response);
-
-    const resData = await response.json();
-    console.log('resData');
-    console.log(resData);
-
-    return resData;
-     
-  } catch (error) {
-    console.error(error);
-  }
-}
+import { postOrders } from "../http.js";
 
 export default function Checkout({
   items,
@@ -132,9 +108,7 @@ export default function Checkout({
       isNotEmpty(dataForm.customer["postal-code"]) &&
       isNotEmpty(dataForm.customer.city)
     ) {
-      console.log("submit order");
-
-      fetchOrders(dataForm);
+      postOrders(dataForm);
     }
   }
 

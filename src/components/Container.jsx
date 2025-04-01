@@ -1,21 +1,19 @@
 import { useEffect, useState } from "react";
-import MealItem from "./MealItem";
+
+import MealItem from "./MealItem.jsx";
+
+import { fetchMeals } from "../http.js";
 
 export default function Container({ onMealButtonClick }) {
   const [mealsItemsData, setMealsItemsData] = useState([]);
 
   useEffect(() => {
-    async function fetchPlaces() {
-      try {
-        const response = await fetch("http://localhost:3000/meals");
-        const resData = await response.json();
-        setMealsItemsData(resData);
-      } catch (error) {
-        console.error(error);
-      }
+    async function loadData() {
+      const data = await fetchMeals();
+      if (data) setMealsItemsData(data);
     }
 
-    fetchPlaces();
+    loadData();
   }, []);
 
   return (
