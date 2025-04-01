@@ -13,6 +13,7 @@ export default function Checkout({
   closeModal,
   handleOutsideClick,
   total,
+  openSuccessModal
 }) {
   const [dataForm, setaDataForm] = useState({
     items: { ...items },
@@ -109,6 +110,7 @@ export default function Checkout({
       isNotEmpty(dataForm.customer.city)
     ) {
       postOrders(dataForm);
+      openSuccessModal();
     }
   }
 

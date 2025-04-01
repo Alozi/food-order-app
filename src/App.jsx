@@ -4,11 +4,13 @@ import Header from "./components/Header";
 import Container from "./components/Container";
 import Cart from "./components/Cart";
 import Checkout from "./components/Checkout";
+import Success from "./components/Success";
 
 function App() {
   const [cartData, setCartData] = useState([]);
   const modalCartRef = useRef(null);
   const modalCheckoutRef = useRef(null);
+  const modalSuccessRef = useRef();
 
   const totalPrice = useMemo(
     () =>
@@ -73,6 +75,22 @@ function App() {
     }
   }
 
+  function openModalSuccess() {
+    closeModalCheckout();
+    modalSuccessRef.current.showModal();
+    setCartData([]);
+  }
+
+  function closeModalSuccess() {
+    modalSuccessRef.current.close();
+  }
+
+  function handleOutsideClickSuccess(e) {
+    if (e.target === modalSuccessRef.current) {
+      closeModalSuccess();
+    }
+  }
+
   function increaseQuantity(title) {
     setCartData((prevState) => {
       return prevState.map((item) =>
@@ -119,6 +137,12 @@ function App() {
         modalRef={modalCheckoutRef}
         closeModal={closeModalCheckout}
         handleOutsideClick={handleOutsideClickCheckout}
+        openSuccessModal={openModalSuccess}
+      />
+      <Success
+        modalRef={modalSuccessRef}
+        closeModal={closeModalSuccess}
+        handleOutsideClick={handleOutsideClickSuccess}
       />
     </>
   );
