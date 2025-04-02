@@ -1,4 +1,4 @@
-import { useState, useRef, useMemo } from "react";
+import { useState, useRef, useMemo, useEffect } from "react";
 
 import Header from "./components/Header";
 import Container from "./components/Container";
@@ -11,6 +11,25 @@ function App() {
   const modalCartRef = useRef(null);
   const modalCheckoutRef = useRef(null);
   const modalSuccessRef = useRef();
+
+  console.log(cartData);
+
+  useEffect(() => {
+    const storedUserData = localStorage.getItem("cart");
+
+    if (storedUserData) {
+      const userData = JSON.parse(storedUserData);
+      setCartData(userData);
+    } else {
+      console.log("User data not found in local storage");
+    }
+  }, []);
+
+  useEffect(() => {
+    if (cartData.length > 0) {
+      localStorage.setItem("cart", JSON.stringify(cartData));
+    }
+  }, [cartData]);
 
   const totalPrice = useMemo(
     () =>
@@ -79,6 +98,7 @@ function App() {
     closeModalCheckout();
     modalSuccessRef.current.showModal();
     setCartData([]);
+    localStorage.clear();
   }
 
   function closeModalSuccess() {
