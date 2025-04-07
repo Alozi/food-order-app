@@ -1,3 +1,5 @@
+import Button from "./Button";
+
 export default function Modal({
   title,
   children,
@@ -12,12 +14,12 @@ export default function Modal({
       <h2>{title}</h2>
       {children}
       <div className="modal-actions">
-        <button className="text-button" onClick={closeModal}>
+        <Button textOnly={true} onClick={closeModal}>
           Close
-        </button>
-        <button className="button" onClick={nextStepButton} disabled={nextStepButton == null ? true : false}>
+        </Button>
+        <Button onClick={nextStepButton} disabled={nextStepButton == null ? true : false}>
           {buttonLabel}
-        </button>
+        </Button>
       </div>
     </dialog>
   );

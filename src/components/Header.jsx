@@ -1,4 +1,5 @@
 import Image from "../assets/logo.jpg";
+import Button from "../components/common/Button.jsx";
 
 export default function Header({ cartLength, openCartModal }) {
   return (
@@ -8,9 +9,9 @@ export default function Header({ cartLength, openCartModal }) {
         <h1>Food Order App 💪</h1>
       </div>
       <nav>
-        <button className="button" onClick={openCartModal}>
+        <Button onClick={openCartModal}>
           Cart {cartLength > 0 && `(${cartLength})`}
-        </button>
+        </Button>
       </nav>
     </header>
   );

@@ -1,4 +1,5 @@
 import { currencyFormatter } from "../util/formatting.js";
+import Button from "../components/common/Button.jsx";
 
 export default function MealItem({
   id,
@@ -18,12 +19,11 @@ export default function MealItem({
           <p className="meal-item-description">{description}</p>
         </div>
         <div className="meal-item-actions">
-          <button
-            className="button"
+          <Button
             onClick={() => onButtonClick(id, title, price)}
           >
             Add to Cart
-          </button>
+          </Button>
         </div>
       </article>
     </li>
