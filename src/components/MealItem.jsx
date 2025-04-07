@@ -1,3 +1,5 @@
+import { currencyFormatter } from "../util/formatting.js";
+
 export default function MealItem({
   id,
   img,
@@ -12,7 +14,7 @@ export default function MealItem({
         <img src={img} alt={title} />
         <div>
           <h3>{title}</h3>
-          <p className="meal-item-price">${price}</p>
+          <p className="meal-item-price">{currencyFormatter.format(price)}</p>
           <p className="meal-item-description">{description}</p>
         </div>
         <div className="meal-item-actions">
