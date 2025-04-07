@@ -17,14 +17,13 @@ export default function Container({ onMealButtonClick }) {
   }, []);
 
   return (
-    <main id="meals">
+    <ul id="meals">
       {mealsItemsData.map((item) => {
-        const imgSrc = `http://localhost:3000/${item.image}`;
         return (
           <MealItem
             key={item.id}
             id={item.id}
-            img={imgSrc}
+            img={`http://localhost:3000/${item.image}`}
             title={item.name}
             price={item.price}
             description={item.description}
@@ -32,6 +31,6 @@ export default function Container({ onMealButtonClick }) {
           />
         );
       })}
-    </main>
+    </ul>
   );
 }
