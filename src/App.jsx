@@ -6,6 +6,8 @@ import Cart from "./components/Cart";
 import Checkout from "./components/Checkout";
 import Success from "./components/Success";
 
+import { CartContextProvider } from "./store/CartContext";
+
 function App() {
   const [cartData, setCartData] = useState([]);
   const modalCartRef = useRef(null);
@@ -138,7 +140,7 @@ function App() {
   }
 
   return (
-    <>
+    <CartContextProvider>
       <Header cartLength={cartData.length} openCartModal={openModalCart} />
       <Container onMealButtonClick={handleMealButton} />
       <Cart
@@ -164,7 +166,7 @@ function App() {
         closeModal={closeModalSuccess}
         handleOutsideClick={handleOutsideClickSuccess}
       />
-    </>
+    </CartContextProvider>
   );
 }
 
