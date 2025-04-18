@@ -4,7 +4,7 @@ import MealItem from "./MealItem.jsx";
 
 import { fetchMeals } from "../http.js";
 
-export default function Container({ onMealButtonClick }) {
+export default function Container() {
   const [mealsItemsData, setMealsItemsData] = useState([]);
 
   useEffect(() => {
@@ -22,12 +22,7 @@ export default function Container({ onMealButtonClick }) {
         return (
           <MealItem
             key={item.id}
-            id={item.id}
-            img={`http://localhost:3000/${item.image}`}
-            title={item.name}
-            price={item.price}
-            description={item.description}
-            onButtonClick={onMealButtonClick}
+            meal={item}
           />
         );
       })}

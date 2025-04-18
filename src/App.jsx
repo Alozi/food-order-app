@@ -141,8 +141,8 @@ function App() {
 
   return (
     <CartContextProvider>
-      <Header cartLength={cartData.length} openCartModal={openModalCart} />
-      <Container onMealButtonClick={handleMealButton} />
+      <Header openCartModal={openModalCart} />
+      <Container />
       <Cart
         data={cartData}
         modalRef={modalCartRef}
