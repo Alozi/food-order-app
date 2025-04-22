@@ -1,9 +1,10 @@
-import { createPortal } from "react-dom";
 import { useContext } from "react";
 
 import Modal from "./common/Modal.jsx";
 import CartContext from "../store/CartContext.jsx";
 import Button from "./common/Button.jsx";
+import CartItem from "./CartItem.jsx";
+
 import { currencyFormatter } from "../util/formatting.js";
 import UserProgressContext from "../store/UserProgressContext.jsx";
 
@@ -29,21 +30,14 @@ export default function Cart({ onIncreaseQuantity, onDecreaseQuantity }) {
           <ul>
             {cartContext.items.map((item) => {
               return (
-                <li key={item.id} className="cart-item">
-                  <p>
-                    {item.name} - {item.quantity} x ${item.price}
-                  </p>
-
-                  <div className="cart-item-actions">
-                    <button onClick={() => onDecreaseQuantity(item.title)}>
-                      -
-                    </button>
-                    {item.quantity}
-                    <button onClick={() => onIncreaseQuantity(item.title)}>
-                      +
-                    </button>
-                  </div>
-                </li>
+                <CartItem
+                  key={item.id}
+                  name={item.name}
+                  quantity={item.quantity}
+                  price={item.price}
+                  onDecrease={() => cartContext.removeItem(item.id)}
+                  onIncrease={() => cartContext.addItem(item)}
+                />
               );
             })}
           </ul>
@@ -52,7 +46,9 @@ export default function Cart({ onIncreaseQuantity, onDecreaseQuantity }) {
         <div className="cart-total">{currencyFormatter.format(cartTotal)}</div>
 
         <div className="modal-actions">
-          <Button textOnly onClick={handleCloseCart}>Close</Button>
+          <Button textOnly onClick={handleCloseCart}>
+            Close
+          </Button>
           <Button onClick={handleCloseCart}>Go to Checkout</Button>
         </div>
       </div>
