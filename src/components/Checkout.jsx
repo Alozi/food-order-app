@@ -25,8 +25,12 @@ export default function Checkout({ items }) {
     userProgressContext.hideCheckout();
   }
 
+  function handleGoToSuccess() {
+    userProgressContext.hideCheckout();
+  }
+
   const [dataForm, setaDataForm] = useState({
-    items: { ...userProgressContext.items },
+    items: { ...cartContext.items },
     customer: {
       name: "",
       email: "",
@@ -36,7 +40,7 @@ export default function Checkout({ items }) {
     },
   });
 
-  console.log('dataForm');
+  console.log("dataForm");
   console.log(dataForm);
 
   const [didEdit, setDidEdit] = useState({
@@ -69,7 +73,18 @@ export default function Checkout({ items }) {
     return;
   }
 
-  function submitOrder() {
+  function handleInputBlur(name) {
+    setDidEdit((prevState) => {
+      return {
+        ...prevState,
+        [name]: true,
+      };
+    });
+  }
+
+  function handleSubmit(event) {
+    event.preventDefault();
+
     if (!isNotEmpty(dataForm.customer.name)) {
       setErrors((prevState) => {
         return {
@@ -123,22 +138,16 @@ export default function Checkout({ items }) {
       isNotEmpty(dataForm.customer.city)
     ) {
       postOrders(dataForm);
-      // openSuccessModal();
+      handleGoToSuccess();
     }
   }
 
-  function handleInputBlur(name) {
-    setDidEdit((prevState) => {
-      return {
-        ...prevState,
-        [name]: true,
-      };
-    });
-  }
-
   return (
-    <Modal open={userProgressContext.progress === "checkout"} onClose={handleCloseCheckout}>
-      <form>
+    <Modal
+      open={userProgressContext.progress === "checkout"}
+      onClose={handleCloseCheckout}
+    >
+      <form onSubmit={handleSubmit}>
         <h2>Checkout</h2>
         <p>Total Amount: {currencyFormatter.format(cartTotal)}</p>
         <Input
@@ -219,7 +228,7 @@ export default function Checkout({ items }) {
           <Button type="button" textOnly onClick={handleCloseCheckout}>
             Close
           </Button>
-          <Button onClick={submitOrder}>Submit Order</Button>
+          <Button>Submit Order</Button>
         </p>
       </form>
     </Modal>
