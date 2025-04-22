@@ -1,35 +1,37 @@
 import { createPortal } from "react-dom";
+import { useContext } from "react";
 
 import Modal from "./common/Modal.jsx";
+import CartContext from "../store/CartContext.jsx";
+import Button from "./common/Button.jsx";
+import { currencyFormatter } from "../util/formatting.js";
+import UserProgressContext from "../store/UserProgressContext.jsx";
 
-export default function Cart({
-  data,
-  modalRef,
-  closeModal,
-  handleOutsideClick,
-  total,
-  onIncreaseQuantity,
-  onDecreaseQuantity,
-  openCheckoutModal,
-}) {
-  return createPortal(
-    <Modal
-      title="Your Cart"
-      buttonLabel="Go to Checkout"
-      modalRef={modalRef}
-      closeModal={closeModal}
-      handleOutsideClick={handleOutsideClick}
-      nextStepButton={total == 0 ? null : openCheckoutModal}
-    >
+export default function Cart({ onIncreaseQuantity, onDecreaseQuantity }) {
+  const cartContext = useContext(CartContext);
+  const userProgressContext = useContext(UserProgressContext);
+
+  const cartTotal = cartContext.items.reduce(
+    (totalPrice, item) => (totalPrice += item.quantity * item.price),
+    0
+  );
+
+  function handleCloseCart() {
+    userProgressContext.hideCart();
+  }
+
+  return (
+    <Modal open={userProgressContext.progress === "cart"} className="cart">
+      <h2>Your Cart</h2>
       <div className="cart">
-        {data.length == 0 && <p>Your cart is empty.</p>}
-        {data.length > 0 && (
+        {cartContext.items.length == 0 && <p>Your cart is empty.</p>}
+        {cartContext.items.length > 0 && (
           <ul>
-            {data.map((item) => {
+            {cartContext.items.map((item) => {
               return (
                 <li key={item.id} className="cart-item">
                   <p>
-                    {item.title} - {item.quantity} x ${item.price}
+                    {item.name} - {item.quantity} x ${item.price}
                   </p>
 
                   <div className="cart-item-actions">
@@ -47,9 +49,13 @@ export default function Cart({
           </ul>
         )}
 
-        <div className="cart-total">${total}</div>
+        <div className="cart-total">{currencyFormatter.format(cartTotal)}</div>
+
+        <div className="modal-actions">
+          <Button textOnly onClick={handleCloseCart}>Close</Button>
+          <Button onClick={handleCloseCart}>Go to Checkout</Button>
+        </div>
       </div>
-    </Modal>,
-    document.getElementById("modal")
+    </Modal>
   );
 }

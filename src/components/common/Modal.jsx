@@ -1,26 +1,21 @@
-import Button from "./Button";
+import { useEffect, useRef } from "react";
+import { createPortal } from "react-dom";
 
-export default function Modal({
-  title,
-  children,
-  buttonLabel,
-  modalRef,
-  closeModal,
-  handleOutsideClick,
-  nextStepButton,
-}) {
-  return (
-    <dialog className="modal" ref={modalRef} onClick={handleOutsideClick}>
-      <h2>{title}</h2>
+export default function Modal({ open, children, className = "" }) {
+  const dialog = useRef();
+
+  useEffect(() => {
+    if (open) {
+      dialog.current.showModal();
+    } else {
+      dialog.current.close();
+    }
+  }, [open]);
+
+  return createPortal(
+    <dialog className={`modal ${className}`} ref={dialog}>
       {children}
-      <div className="modal-actions">
-        <Button textOnly={true} onClick={closeModal}>
-          Close
-        </Button>
-        <Button onClick={nextStepButton} disabled={nextStepButton == null ? true : false}>
-          {buttonLabel}
-        </Button>
-      </div>
-    </dialog>
+    </dialog>,
+    document.getElementById("modal")
   );
 }

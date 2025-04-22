@@ -68,7 +68,7 @@ export function CartContextProvider({ children }) {
     removeItem: removeItem,
   };
 
-  console.log("test context api");
+  console.log("cartContext");
   console.log(cartContext);
 
   return <CartContext value={cartContext}>{children}</CartContext>;

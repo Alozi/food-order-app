@@ -3,15 +3,20 @@ import { useContext } from "react";
 import Image from "../assets/logo.jpg";
 import Button from "../components/common/Button.jsx";
 import CartContext from "../store/CartContext.jsx";
+import UserProgressContext from "../store/UserProgressContext.jsx";
 
-export default function Header({ openCartModal }) {
+export default function Header() {
   const cartContext = useContext(CartContext);
+  const userProgressContext = useContext(UserProgressContext);
 
   const totalCartItem = cartContext.items.reduce((totalNumberOfItems, item) => {
     return totalNumberOfItems + item.quantity;
   }, 0);
 
-  console.log();
+  function handleShowCart() {
+    userProgressContext.showCart();
+  }
+
   return (
     <header id="main-header">
       <div id="title">
@@ -19,9 +24,7 @@ export default function Header({ openCartModal }) {
         <h1>Food Order App 💪</h1>
       </div>
       <nav>
-        <Button onClick={openCartModal}>
-          Cart ({totalCartItem})
-        </Button>
+        <Button onClick={handleShowCart}>Cart ({totalCartItem})</Button>
       </nav>
     </header>
   );

@@ -7,14 +7,13 @@ import Checkout from "./components/Checkout";
 import Success from "./components/Success";
 
 import { CartContextProvider } from "./store/CartContext";
+import { UserProgressContextProvider } from "./store/UserProgressContext";
 
 function App() {
   const [cartData, setCartData] = useState([]);
   const modalCartRef = useRef(null);
   const modalCheckoutRef = useRef(null);
   const modalSuccessRef = useRef();
-
-  console.log(cartData);
 
   useEffect(() => {
     const storedUserData = localStorage.getItem("cart");
@@ -40,8 +39,6 @@ function App() {
         .toFixed(2),
     [cartData]
   );
-
-  console.log(cartData);
 
   function handleMealButton(id, title, price) {
     const existingItemIndex = cartData.findIndex((item) => item.id === id);
@@ -140,33 +137,29 @@ function App() {
   }
 
   return (
-    <CartContextProvider>
-      <Header openCartModal={openModalCart} />
-      <Container />
-      <Cart
-        data={cartData}
-        modalRef={modalCartRef}
-        closeModal={closeModalCart}
-        handleOutsideClick={handleOutsideClickCart}
-        total={totalPrice}
-        onIncreaseQuantity={increaseQuantity}
-        onDecreaseQuantity={decreaseQuantity}
-        openCheckoutModal={openModalCheckout}
-      />
-      <Checkout
-        items={cartData}
-        total={totalPrice}
-        modalRef={modalCheckoutRef}
-        closeModal={closeModalCheckout}
-        handleOutsideClick={handleOutsideClickCheckout}
-        openSuccessModal={openModalSuccess}
-      />
-      <Success
-        modalRef={modalSuccessRef}
-        closeModal={closeModalSuccess}
-        handleOutsideClick={handleOutsideClickSuccess}
-      />
-    </CartContextProvider>
+    <UserProgressContextProvider>
+      <CartContextProvider>
+        <Header />
+        <Container />
+        <Cart
+          onIncreaseQuantity={increaseQuantity}
+          onDecreaseQuantity={decreaseQuantity}
+         />
+        <Checkout
+          items={cartData}
+          total={totalPrice}
+          modalRef={modalCheckoutRef}
+          closeModal={closeModalCheckout}
+          handleOutsideClick={handleOutsideClickCheckout}
+          openSuccessModal={openModalSuccess}
+        />
+        <Success
+          modalRef={modalSuccessRef}
+          closeModal={closeModalSuccess}
+          handleOutsideClick={handleOutsideClickSuccess}
+        />
+      </CartContextProvider>
+    </UserProgressContextProvider>
   );
 }
 
