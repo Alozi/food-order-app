@@ -21,8 +21,16 @@ export default function Cart() {
     userProgressContext.hideCart();
   }
 
+  function handleGoToCheckout() {
+    userProgressContext.showCheckout();
+  }
+
   return (
-    <Modal open={userProgressContext.progress === "cart"} className="cart">
+    <Modal
+      open={userProgressContext.progress === "cart"}
+      className="cart"
+      onClose={userProgressContext.progress === "cart" ? handleCloseCart : null}
+    >
       <h2>Your Cart</h2>
       <div className="cart">
         {cartContext.items.length == 0 && <p>Your cart is empty.</p>}
@@ -45,14 +53,14 @@ export default function Cart() {
 
         <div className="cart-total">{currencyFormatter.format(cartTotal)}</div>
 
-        <div className="modal-actions">
+        <p className="modal-actions">
           <Button textOnly onClick={handleCloseCart}>
             Close
           </Button>
           {cartContext.items.length > 0 && (
-            <Button onClick={handleCloseCart}>Go to Checkout</Button>
+            <Button onClick={handleGoToCheckout}>Go to Checkout</Button>
           )}
-        </div>
+        </p>
       </div>
     </Modal>
   );

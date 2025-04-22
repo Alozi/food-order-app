@@ -1,22 +1,32 @@
 import { createPortal } from "react-dom";
-import { useState } from "react";
+import { useContext, useState } from "react";
 
 import Modal from "./common/Modal.jsx";
 import Input from "./common/Input.jsx";
+import Button from "./common/Button.jsx";
+
+import CartContext from "../store/CartContext.jsx";
+import UserProgressContext from "../store/UserProgressContext.jsx";
 
 import { isNotEmpty, isEmail } from "../util/validation.js";
+import { currencyFormatter } from "../util/formatting.js";
 import { postOrders } from "../http.js";
 
-export default function Checkout({
-  items,
-  modalRef,
-  closeModal,
-  handleOutsideClick,
-  total,
-  openSuccessModal
-}) {
+export default function Checkout({ items }) {
+  const cartContext = useContext(CartContext);
+  const userProgressContext = useContext(UserProgressContext);
+
+  const cartTotal = cartContext.items.reduce(
+    (totalPrice, item) => (totalPrice += item.quantity * item.price),
+    0
+  );
+
+  function handleCloseCheckout() {
+    userProgressContext.hideCheckout();
+  }
+
   const [dataForm, setaDataForm] = useState({
-    items: { ...items },
+    items: { ...userProgressContext.items },
     customer: {
       name: "",
       email: "",
@@ -25,6 +35,9 @@ export default function Checkout({
       city: "",
     },
   });
+
+  console.log('dataForm');
+  console.log(dataForm);
 
   const [didEdit, setDidEdit] = useState({
     name: false,
@@ -110,7 +123,7 @@ export default function Checkout({
       isNotEmpty(dataForm.customer.city)
     ) {
       postOrders(dataForm);
-      openSuccessModal();
+      // openSuccessModal();
     }
   }
 
@@ -123,17 +136,11 @@ export default function Checkout({
     });
   }
 
-  return createPortal(
-    <Modal
-      title="Checkout"
-      buttonLabel="Submit Order"
-      modalRef={modalRef}
-      closeModal={closeModal}
-      handleOutsideClick={handleOutsideClick}
-      nextStepButton={submitOrder}
-    >
+  return (
+    <Modal open={userProgressContext.progress === "checkout"} onClose={handleCloseCheckout}>
       <form>
-        <div>Total Amount: ${total}</div>
+        <h2>Checkout</h2>
+        <p>Total Amount: {currencyFormatter.format(cartTotal)}</p>
         <Input
           id="name"
           name="name"
@@ -207,8 +214,14 @@ export default function Checkout({
             }
           />
         </div>
+
+        <p className="modal-actions">
+          <Button type="button" textOnly onClick={handleCloseCheckout}>
+            Close
+          </Button>
+          <Button onClick={submitOrder}>Submit Order</Button>
+        </p>
       </form>
-    </Modal>,
-    document.getElementById("modal")
+    </Modal>
   );
 }
