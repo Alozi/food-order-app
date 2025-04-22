@@ -141,10 +141,7 @@ function App() {
       <CartContextProvider>
         <Header />
         <Container />
-        <Cart
-          onIncreaseQuantity={increaseQuantity}
-          onDecreaseQuantity={decreaseQuantity}
-         />
+        <Cart />
         <Checkout
           items={cartData}
           total={totalPrice}

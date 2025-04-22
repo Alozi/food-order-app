@@ -8,7 +8,7 @@ import CartItem from "./CartItem.jsx";
 import { currencyFormatter } from "../util/formatting.js";
 import UserProgressContext from "../store/UserProgressContext.jsx";
 
-export default function Cart({ onIncreaseQuantity, onDecreaseQuantity }) {
+export default function Cart() {
   const cartContext = useContext(CartContext);
   const userProgressContext = useContext(UserProgressContext);
 
@@ -49,7 +49,9 @@ export default function Cart({ onIncreaseQuantity, onDecreaseQuantity }) {
           <Button textOnly onClick={handleCloseCart}>
             Close
           </Button>
-          <Button onClick={handleCloseCart}>Go to Checkout</Button>
+          {cartContext.items.length > 0 && (
+            <Button onClick={handleCloseCart}>Go to Checkout</Button>
+          )}
         </div>
       </div>
     </Modal>
