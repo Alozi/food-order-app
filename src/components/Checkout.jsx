@@ -12,7 +12,7 @@ import { isNotEmpty, isEmail } from "../util/validation.js";
 import { currencyFormatter } from "../util/formatting.js";
 import { postOrders } from "../http.js";
 
-export default function Checkout({ items }) {
+export default function Checkout() {
   const cartContext = useContext(CartContext);
   const userProgressContext = useContext(UserProgressContext);
 
