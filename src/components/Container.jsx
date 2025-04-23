@@ -1,4 +1,5 @@
 import MealItem from "./MealItem.jsx";
+import Error from "./Error.jsx";
 import useHttp from "../hooks/useHttp.js";
 
 const requestMeals = { method: "GET" };
@@ -10,12 +11,17 @@ export default function Container() {
     []
   );
 
-  console.log("isLoading");
-  console.log(isLoading);
-
   if (isLoading) {
-    return <p>Fething meals...</p>;
+    return <p className="center">Fething meals...</p>;
   }
+
+  if (error) {
+    return <Error title="Failed to fetch meals" message={error} />;
+  }
+
+  // if(!data) {
+  //   return <p>No meals found.</p>
+  // }
 
   return (
     <ul id="meals">

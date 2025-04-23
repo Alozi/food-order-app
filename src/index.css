@@ -14,6 +14,10 @@ body {
   min-height: 100vh;
 }
 
+.center {
+  text-align: center;
+}
+
 #main-header {
   display: flex;
   justify-content: space-between;
@@ -200,7 +204,7 @@ h1 {
 
 .control p {
   color: red;
-  margin: 5px 0 0;  
+  margin: 5px 0 0;
   font-size: 0.75rem;
 }
 
@@ -258,6 +262,16 @@ h1 {
 
 .modal::backdrop {
   background-color: rgba(0, 0, 0, 0.55);
+}
+
+.error {
+  display: block;
+  width: 300px;
+  margin: 0 auto;
+  border: 1px solid red;
+  background: red;
+  border-radius: 15px;
+  padding: 10px;
 }
 
 @keyframes fade-slide-up {
