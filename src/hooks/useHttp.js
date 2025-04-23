@@ -18,10 +18,10 @@ export default function useHttp(url, config, initialData) {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState();
 
-    const sendRequest = useCallback(async function sendRequest() {
+    const sendRequest = useCallback(async function sendRequest(data) {
         setIsLoading(true);
         try {
-            const resData = await sendHttpRequest(url, config);
+            const resData = await sendHttpRequest(url, { ...config, body: data });
             setData(resData);
         } catch (error) {
             setError(error.message || 'Something went wrong!')
@@ -43,28 +43,28 @@ export default function useHttp(url, config, initialData) {
     }
 }
 
-export async function fetchMeals() {
-    try {
-        const response = await fetch("http://localhost:3000/meals");
-        const resData = await response.json();
-        return resData;
-    } catch (error) {
-        console.error(error);
-    }
-}
+// export async function fetchMeals() {
+//     try {
+//         const response = await fetch("http://localhost:3000/meals");
+//         const resData = await response.json();
+//         return resData;
+//     } catch (error) {
+//         console.error(error);
+//     }
+// }
 
-export async function postOrders(orderData) {
-    try {
-        const response = await fetch("http://localhost:3000/orders", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ order: orderData }),
-        });
-        const resData = await response.json();
-        return resData;
-    } catch (error) {
-        console.error(error);
-    }
-}
+// export async function postOrders(orderData) {
+//     try {
+//         const response = await fetch("http://localhost:3000/orders", {
+//             method: "POST",
+//             headers: {
+//                 "Content-Type": "application/json",
+//             },
+//             body: JSON.stringify({ order: orderData }),
+//         });
+//         const resData = await response.json();
+//         return resData;
+//     } catch (error) {
+//         console.error(error);
+//     }
+// }

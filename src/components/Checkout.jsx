@@ -4,13 +4,21 @@ import { useContext, useState } from "react";
 import Modal from "./common/Modal.jsx";
 import Input from "./common/Input.jsx";
 import Button from "./common/Button.jsx";
+import Error from "./Error.jsx";
 
 import CartContext from "../store/CartContext.jsx";
 import UserProgressContext from "../store/UserProgressContext.jsx";
 
 import { isNotEmpty, isEmail } from "../util/validation.js";
 import { currencyFormatter } from "../util/formatting.js";
-import { postOrders } from "../hooks/useHttp.js";
+import useHttp from "../hooks/useHttp.js";
+
+const requestMeals = {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+  },
+};
 
 export default function Checkout() {
   const cartContext = useContext(CartContext);
@@ -21,27 +29,23 @@ export default function Checkout() {
     0
   );
 
+  const { data, isLoading, error, sendRequest } = useHttp(
+    "http://localhost:3000/orders",
+    requestMeals,
+    []
+  );
+
   function handleCloseCheckout() {
     userProgressContext.hideCheckout();
   }
 
-  function handleGoToSuccess() {
-    userProgressContext.hideCheckout();
-  }
-
-  const [dataForm, setaDataForm] = useState({
-    items: { ...cartContext.items },
-    customer: {
-      name: "",
-      email: "",
-      street: "",
-      ["postal-code"]: "",
-      city: "",
-    },
+  const [customer, setCustomer] = useState({
+    name: "",
+    email: "",
+    street: "",
+    ["postal-code"]: "",
+    city: "",
   });
-
-  console.log("dataForm");
-  console.log(dataForm);
 
   const [didEdit, setDidEdit] = useState({
     name: false,
@@ -60,13 +64,10 @@ export default function Checkout() {
   });
 
   function handleForm(name, value) {
-    setaDataForm((prevState) => {
+    setCustomer((prevState) => {
       return {
         ...prevState,
-        customer: {
-          ...prevState.customer,
-          [name]: value,
-        },
+        [name]: value,
       };
     });
 
@@ -85,7 +86,7 @@ export default function Checkout() {
   function handleSubmit(event) {
     event.preventDefault();
 
-    if (!isNotEmpty(dataForm.customer.name)) {
+    if (!isNotEmpty(customer.name)) {
       setErrors((prevState) => {
         return {
           ...prevState,
@@ -94,7 +95,7 @@ export default function Checkout() {
       });
     }
 
-    if (!isEmail(dataForm.customer.email)) {
+    if (!isEmail(customer.email)) {
       setErrors((prevState) => {
         return {
           ...prevState,
@@ -103,7 +104,7 @@ export default function Checkout() {
       });
     }
 
-    if (!isNotEmpty(dataForm.customer.street)) {
+    if (!isNotEmpty(customer.street)) {
       setErrors((prevState) => {
         return {
           ...prevState,
@@ -112,7 +113,7 @@ export default function Checkout() {
       });
     }
 
-    if (!isNotEmpty(dataForm.customer["postal-code"])) {
+    if (!isNotEmpty(customer["postal-code"])) {
       setErrors((prevState) => {
         return {
           ...prevState,
@@ -121,7 +122,7 @@ export default function Checkout() {
       });
     }
 
-    if (!isNotEmpty(dataForm.customer.city)) {
+    if (!isNotEmpty(customer.city)) {
       setErrors((prevState) => {
         return {
           ...prevState,
@@ -131,15 +132,59 @@ export default function Checkout() {
     }
 
     if (
-      isNotEmpty(dataForm.customer.name) &&
-      isEmail(dataForm.customer.email) &&
-      isNotEmpty(dataForm.customer.street) &&
-      isNotEmpty(dataForm.customer["postal-code"]) &&
-      isNotEmpty(dataForm.customer.city)
+      isNotEmpty(customer.name) &&
+      isEmail(customer.email) &&
+      isNotEmpty(customer.street) &&
+      isNotEmpty(customer["postal-code"]) &&
+      isNotEmpty(customer.city)
     ) {
-      postOrders(dataForm);
-      handleGoToSuccess();
+      sendRequest(
+        JSON.stringify({
+          order: {
+            items: cartContext.items,
+            customer: customer,
+          },
+        })
+      );
     }
+  }
+
+  let actions = (
+    <>
+      <Button type="button" textOnly onClick={handleCloseCheckout}>
+        Close
+      </Button>
+      <Button>Submit Order</Button>
+    </>
+  );
+
+  if (isLoading) {
+    actions = <span>Sending order data...</span>;
+  }
+
+  console.log('data');
+  console.log(data);
+  console.log(data.message);
+
+  if (data.message && !error) {
+    return (
+      <Modal
+        open={userProgressContext.progress === "checkout"}
+        onClose={handleCloseCheckout}
+      >
+        <h2>Success!</h2>
+        <p>You order was submitted successfully.</p>
+        <p>
+          We will get back to you with more details via email within the next
+          few minutes.
+        </p>
+        <p className="modal-actions">
+          <Button onClick={handleCloseCheckout}>
+            Okay
+          </Button>
+        </p>
+      </Modal>
+    );
   }
 
   return (
@@ -155,12 +200,12 @@ export default function Checkout() {
           name="name"
           type="text"
           label="Full Name"
-          value={dataForm.customer.name}
+          value={customer.name}
           onChange={(e) => handleForm("name", e.target.value)}
           onBlur={() => handleInputBlur("name")}
           error={
             (errors.name || didEdit.name) &&
-            !isNotEmpty(dataForm.customer.name) &&
+            !isNotEmpty(customer.name) &&
             "Please enter a full name."
           }
         />
@@ -169,13 +214,12 @@ export default function Checkout() {
           name="email"
           type="email"
           label="E-Mail Address"
-          value={dataForm.customer.email}
+          value={customer.email}
           onBlur={() => handleInputBlur("email")}
           onChange={(e) => handleForm("email", e.target.value)}
           error={
-            // !isNotEmpty(dataForm.email) &&
             (errors.email || didEdit.email) &&
-            !isEmail(dataForm.customer.email) &&
+            !isEmail(customer.email) &&
             "Please enter a valid email address."
           }
         />
@@ -184,12 +228,12 @@ export default function Checkout() {
           name="street"
           type="text"
           label="Street"
-          value={dataForm.customer.street}
+          value={customer.street}
           onBlur={() => handleInputBlur("street")}
           onChange={(e) => handleForm("street", e.target.value)}
           error={
             (errors.street || didEdit.street) &&
-            !isNotEmpty(dataForm.customer.street) &&
+            !isNotEmpty(customer.street) &&
             "Please enter a street."
           }
         />
@@ -199,12 +243,12 @@ export default function Checkout() {
             name="code"
             type="number"
             label="Postal Code"
-            value={dataForm.customer["postal-code"]}
+            value={customer["postal-code"]}
             onBlur={() => handleInputBlur("postal-code")}
             onChange={(e) => handleForm("postal-code", e.target.value)}
             error={
               (errors["postal-code"] || didEdit["postal-code"]) &&
-              !isNotEmpty(dataForm.customer["postal-code"]) &&
+              !isNotEmpty(customer["postal-code"]) &&
               "Please enter a code."
             }
           />
@@ -213,23 +257,20 @@ export default function Checkout() {
             name="city"
             type="text"
             label="City"
-            value={dataForm.customer.city}
+            value={customer.city}
             onBlur={() => handleInputBlur("city")}
             onChange={(e) => handleForm("city", e.target.value)}
             error={
               (errors.city || didEdit.city) &&
-              !isNotEmpty(dataForm.customer.city) &&
+              !isNotEmpty(customer.city) &&
               "Please enter a city."
             }
           />
         </div>
 
-        <p className="modal-actions">
-          <Button type="button" textOnly onClick={handleCloseCheckout}>
-            Close
-          </Button>
-          <Button>Submit Order</Button>
-        </p>
+        {error && <Error title="Failed to submit order" message={error} />}
+
+        <p className="modal-actions">{actions}</p>
       </form>
     </Modal>
   );
