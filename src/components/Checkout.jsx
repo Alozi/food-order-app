@@ -10,7 +10,7 @@ import UserProgressContext from "../store/UserProgressContext.jsx";
 
 import { isNotEmpty, isEmail } from "../util/validation.js";
 import { currencyFormatter } from "../util/formatting.js";
-import { postOrders } from "../http.js";
+import { postOrders } from "../hooks/useHttp.js";
 
 export default function Checkout() {
   const cartContext = useContext(CartContext);
