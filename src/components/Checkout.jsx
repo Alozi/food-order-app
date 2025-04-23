@@ -29,14 +29,19 @@ export default function Checkout() {
     0
   );
 
-  const { data, isLoading, error, sendRequest } = useHttp(
+  const { data, isLoading, error, sendRequest, clearData } = useHttp(
     "http://localhost:3000/orders",
-    requestMeals,
-    []
+    requestMeals
   );
 
   function handleCloseCheckout() {
     userProgressContext.hideCheckout();
+  }
+
+  function handleFinish() {
+    userProgressContext.hideCheckout();
+    cartContext.clearCart();
+    clearData();
   }
 
   const [customer, setCustomer] = useState({
@@ -162,15 +167,11 @@ export default function Checkout() {
     actions = <span>Sending order data...</span>;
   }
 
-  console.log('data');
-  console.log(data);
-  console.log(data.message);
-
-  if (data.message && !error) {
+  if (data && !error) {
     return (
       <Modal
         open={userProgressContext.progress === "checkout"}
-        onClose={handleCloseCheckout}
+        onClose={handleFinish}
       >
         <h2>Success!</h2>
         <p>You order was submitted successfully.</p>
@@ -179,9 +180,7 @@ export default function Checkout() {
           few minutes.
         </p>
         <p className="modal-actions">
-          <Button onClick={handleCloseCheckout}>
-            Okay
-          </Button>
+          <Button onClick={handleFinish}>Okay</Button>
         </p>
       </Modal>
     );
