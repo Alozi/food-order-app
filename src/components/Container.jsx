@@ -20,14 +20,14 @@ export default function Container() {
     let storedUserData = localStorage.getItem("cart");
     storedUserData = JSON.parse(storedUserData);
 
-    if (storedUserData.length > 0) {
+    if (storedUserData && storedUserData.length > 0) {
       cartContext.addInitialCart(storedUserData);
     }
   }, []);
 
   useEffect(() => {
     localStorage.setItem("cart", JSON.stringify(cartContext.items));
-  }, [cartContext]);
+  }, [cartContext.items]);
 
   if (isLoading) {
     return <p className="center">Fething meals...</p>;
